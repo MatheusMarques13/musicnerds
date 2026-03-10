@@ -21,28 +21,39 @@ export function AlbumCard({ title, artist, rating, coverUrl, initials, onClick }
       onClick={onClick}
       className="bg-cream-100 dark:bg-charcoal-800 border border-brown-600/12 dark:border-gray-400/20 rounded-xl overflow-hidden cursor-pointer transition-all duration-200 hover:-translate-y-1 hover:shadow-md"
     >
-      <div className="w-full aspect-square bg-gradient-to-br from-teal-500 to-teal-700 flex items-center justify-center text-white text-3xl font-bold">
+      {/* relative + overflow-hidden keeps the fill image contained */}
+      <div className="relative w-full aspect-square bg-gradient-to-br from-teal-500 to-teal-700 overflow-hidden">
         {coverUrl ? (
-          <Image src={coverUrl} alt={title} fill className="object-cover" />
+          <Image
+            src={coverUrl}
+            alt={title}
+            fill
+            sizes="(max-width: 640px) 50vw, (max-width: 1024px) 33vw, 16vw"
+            className="object-cover"
+          />
         ) : (
-          <span>{initials ?? title.slice(0, 2).toUpperCase()}</span>
+          <div className="w-full h-full flex items-center justify-center text-white text-3xl font-bold">
+            <span>{initials ?? title.slice(0, 2).toUpperCase()}</span>
+          </div>
         )}
       </div>
       <div className="p-3">
         <div className="font-semibold text-sm truncate mb-1">{title}</div>
-        <div className="text-xs text-slate-500 dark:text-gray-300/70 mb-2">{artist}</div>
-        <div className="flex items-center gap-1">
-          <div className="flex text-amber-500">
-            {Array.from({ length: 5 }).map((_, i) => (
-              <Star
-                key={i}
-                size={14}
-                fill={i < fullStars || (i === fullStars && hasHalf) ? 'currentColor' : 'none'}
-              />
-            ))}
+        <div className="text-xs text-slate-500 dark:text-gray-300/70 mb-2 truncate">{artist}</div>
+        {rating > 0 && (
+          <div className="flex items-center gap-1">
+            <div className="flex text-amber-500">
+              {Array.from({ length: 5 }).map((_, i) => (
+                <Star
+                  key={i}
+                  size={14}
+                  fill={i < fullStars || (i === fullStars && hasHalf) ? 'currentColor' : 'none'}
+                />
+              ))}
+            </div>
+            <span className="text-xs font-semibold">{rating.toFixed(1)}</span>
           </div>
-          <span className="text-xs font-semibold">{rating.toFixed(1)}</span>
-        </div>
+        )}
       </div>
     </div>
   )
