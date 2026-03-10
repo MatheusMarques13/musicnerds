@@ -15,13 +15,7 @@ export function ExploreView() {
   const { albums: newReleases, loading: releasesLoading } = useNewReleases()
 
   const isSearching = query.trim().length >= 2
-
-  // When searching, show search results; otherwise show new releases filtered by genre
-  const displayAlbums = isSearching
-    ? results
-    : activeGenre === 'All'
-    ? newReleases
-    : newReleases // genre filter will work once we have real genre data
+  const displayAlbums = isSearching ? results : newReleases
 
   return (
     <>
@@ -50,7 +44,7 @@ export function ExploreView() {
               className={`px-4 py-2 rounded-full text-xs font-medium whitespace-nowrap transition-all ${
                 activeGenre === g
                   ? 'bg-teal-500 dark:bg-teal-300 text-cream-50 dark:text-slate-900'
-                  : 'bg-brown-600/12 dark:bg-gray-400/15 hover:bg-brown-600/20 dark:hover:bg-gray-400/25'
+                  : 'bg-brown-600/12 dark:bg-gray-400/15 hover:bg-brown-600/20'
               }`}
             >
               {g}
@@ -63,13 +57,9 @@ export function ExploreView() {
         <h2 className="text-sm font-semibold text-slate-500 dark:text-gray-400 uppercase tracking-wide">
           {isSearching
             ? `${results.length} results for "${query}"`
-            : releasesLoading
-            ? 'Loading new releases...'
-            : `${newReleases.length} new releases`}
+            : releasesLoading ? 'Loading...' : `${newReleases.length} new releases`}
         </h2>
-        {releasesLoading && !isSearching && (
-          <Loader2 size={16} className="animate-spin text-teal-500" />
-        )}
+        {releasesLoading && !isSearching && <Loader2 size={16} className="animate-spin text-teal-500" />}
       </div>
 
       {displayAlbums.length > 0 ? (
@@ -82,6 +72,7 @@ export function ExploreView() {
               rating={album.avg_rating ?? 0}
               coverUrl={album.cover_url ?? undefined}
               initials={album.title?.slice(0, 2).toUpperCase()}
+              spotifyId={album.spotify_id ?? album.id}
             />
           ))}
         </div>

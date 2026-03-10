@@ -1,6 +1,7 @@
 'use client'
 
 import Image from 'next/image'
+import { useRouter } from 'next/navigation'
 import { Star } from 'lucide-react'
 
 interface AlbumCardProps {
@@ -9,19 +10,25 @@ interface AlbumCardProps {
   rating: number
   coverUrl?: string
   initials?: string
+  spotifyId?: string
   onClick?: () => void
 }
 
-export function AlbumCard({ title, artist, rating, coverUrl, initials, onClick }: AlbumCardProps) {
+export function AlbumCard({ title, artist, rating, coverUrl, initials, spotifyId, onClick }: AlbumCardProps) {
+  const router = useRouter()
   const fullStars = Math.floor(rating)
   const hasHalf = rating % 1 >= 0.5
 
+  function handleClick() {
+    if (onClick) { onClick(); return }
+    if (spotifyId) router.push(`/album/${spotifyId}`)
+  }
+
   return (
     <div
-      onClick={onClick}
+      onClick={handleClick}
       className="bg-cream-100 dark:bg-charcoal-800 border border-brown-600/12 dark:border-gray-400/20 rounded-xl overflow-hidden cursor-pointer transition-all duration-200 hover:-translate-y-1 hover:shadow-md"
     >
-      {/* relative + overflow-hidden keeps the fill image contained */}
       <div className="relative w-full aspect-square bg-gradient-to-br from-teal-500 to-teal-700 overflow-hidden">
         {coverUrl ? (
           <Image
