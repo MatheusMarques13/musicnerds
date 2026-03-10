@@ -2,12 +2,20 @@ import { NextRequest, NextResponse } from 'next/server'
 import { getSpotifyAlbum } from '@/lib/spotify'
 import { getAlbumInfo } from '@/lib/lastfm'
 
+export const runtime = 'nodejs'
+
 export async function GET(
   _request: NextRequest,
   { params }: { params: { id: string } }
 ) {
   try {
     const spotifyAlbum = await getSpotifyAlbum(params.id)
+
+    if (!spotifyAlbum || spotifyAlbum.error) {
+      console.error('[album] Spotify returned error:', spotifyAlbum)
+      return NextResponse.json({ error: 'Album not found on Spotify' }, { status: 404 })
+    }
+
     const artist = spotifyAlbum?.artists?.[0]?.name
     const title = spotifyAlbum?.name
 
@@ -16,7 +24,7 @@ export async function GET(
       try {
         lastfmData = await getAlbumInfo(artist, title)
       } catch {
-        // Last.fm not critical
+        // Last.fm not critical, continue without it
       }
     }
 
@@ -33,7 +41,7 @@ export async function GET(
         title: t.name,
         duration_ms: t.duration_ms,
         preview_url: t.preview_url,
-      })),
+      })) ?? [],
       lastfm: lastfmData ? {
         listeners: lastfmData.listeners,
         playcount: lastfmData.playcount,
@@ -42,7 +50,7 @@ export async function GET(
       } : null,
     })
   } catch (err) {
-    console.error('[album] error:', err)
-    return NextResponse.json({ error: 'Album not found' }, { status: 404 })
+    console.error('[album] error:', String(err))
+    return NextResponse.json({ error: 'Album not found', details: String(err) }, { status: 404 })
   }
 }
