@@ -2,6 +2,8 @@ import { NextRequest, NextResponse } from 'next/server'
 import { searchAlbums } from '@/lib/lastfm'
 import { searchSpotifyAlbum } from '@/lib/spotify'
 
+export const runtime = 'nodejs'
+
 export async function GET(request: NextRequest) {
   const query = request.nextUrl.searchParams.get('q')
 
@@ -10,35 +12,45 @@ export async function GET(request: NextRequest) {
   }
 
   try {
-    const [lastfmResults, spotifyResults] = await Promise.allSettled([
-      searchAlbums(query, 12),
+    const [spotifyResult, lastfmResult] = await Promise.allSettled([
       searchSpotifyAlbum(query, 12),
+      searchAlbums(query, 12),
     ])
 
-    const lastfm = lastfmResults.status === 'fulfilled' ? lastfmResults.value : []
-    const spotify = spotifyResults.status === 'fulfilled' ? spotifyResults.value : []
+    const spotify = spotifyResult.status === 'fulfilled' ? spotifyResult.value : []
+    const lastfm = lastfmResult.status === 'fulfilled' ? lastfmResult.value : []
 
-    // Merge: prefer Spotify for cover art, Last.fm for metadata
-    const merged = spotify.map((spItem: any) => {
-      const lfMatch = lastfm.find((lf: any) =>
-        lf.name?.toLowerCase() === spItem.name?.toLowerCase() &&
-        lf.artist?.toLowerCase() === spItem.artists?.[0]?.name?.toLowerCase()
-      )
-      return {
+    // If Spotify worked, use it as primary source
+    if (spotify.length > 0) {
+      const merged = spotify.map((spItem: any) => ({
         id: spItem.id,
         title: spItem.name,
         artist: spItem.artists?.[0]?.name ?? 'Unknown',
         cover_url: spItem.images?.[1]?.url ?? spItem.images?.[0]?.url ?? null,
-        release_year: spItem.release_date?.split('-')[0],
+        release_year: spItem.release_date?.split('-')[0] ?? '',
         spotify_id: spItem.id,
-        lastfm_url: lfMatch?.url ?? null,
         total_tracks: spItem.total_tracks,
-      }
-    })
+      }))
+      return NextResponse.json({ results: merged, total: merged.length, source: 'spotify' })
+    }
 
-    return NextResponse.json({ results: merged, total: merged.length })
+    // Fallback to Last.fm if Spotify failed
+    if (lastfm.length > 0) {
+      const merged = lastfm.map((lf: any) => ({
+        id: lf.mbid || `${lf.name}-${lf.artist}`,
+        title: lf.name,
+        artist: lf.artist ?? 'Unknown',
+        cover_url: lf.image?.find((i: any) => i.size === 'extralarge')?.['#text'] || null,
+        release_year: '',
+        spotify_id: null,
+        total_tracks: null,
+      }))
+      return NextResponse.json({ results: merged, total: merged.length, source: 'lastfm' })
+    }
+
+    return NextResponse.json({ results: [], total: 0, source: 'none' })
   } catch (err) {
     console.error('[search] error:', err)
-    return NextResponse.json({ error: 'Search failed' }, { status: 500 })
+    return NextResponse.json({ error: 'Search failed', details: String(err) }, { status: 500 })
   }
 }

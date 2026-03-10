@@ -10,7 +10,8 @@ async function getAccessToken(): Promise<string> {
 
   const clientId = process.env.SPOTIFY_CLIENT_ID!
   const clientSecret = process.env.SPOTIFY_CLIENT_SECRET!
-  const credentials = Buffer.from(`${clientId}:${clientSecret}`).toString('base64')
+  // btoa works in both Edge and Node runtimes (unlike Buffer)
+  const credentials = btoa(`${clientId}:${clientSecret}`)
 
   const res = await fetch(SPOTIFY_TOKEN_URL, {
     method: 'POST',
@@ -19,7 +20,13 @@ async function getAccessToken(): Promise<string> {
       'Content-Type': 'application/x-www-form-urlencoded',
     },
     body: 'grant_type=client_credentials',
+    cache: 'no-store',
   })
+
+  if (!res.ok) {
+    const text = await res.text()
+    throw new Error(`Spotify token error ${res.status}: ${text}`)
+  }
 
   const data = await res.json()
   cachedToken = {
@@ -40,7 +47,7 @@ async function spotifyFetch<T>(endpoint: string): Promise<T> {
   return res.json()
 }
 
-export async function searchSpotifyAlbum(query: string, limit = 6) {
+export async function searchSpotifyAlbum(query: string, limit = 12) {
   const encoded = encodeURIComponent(query)
   const data = await spotifyFetch<any>(`/search?q=${encoded}&type=album&limit=${limit}`)
   return data?.albums?.items ?? []
@@ -57,11 +64,6 @@ export async function getSpotifyArtist(artistId: string) {
 export async function getNewReleases(limit = 12) {
   const data = await spotifyFetch<any>(`/browse/new-releases?limit=${limit}`)
   return data?.albums?.items ?? []
-}
-
-export async function getFeaturedPlaylists(limit = 6) {
-  const data = await spotifyFetch<any>(`/browse/featured-playlists?limit=${limit}`)
-  return data?.playlists?.items ?? []
 }
 
 export function getAlbumCover(album: any, size: 'sm' | 'md' | 'lg' = 'md'): string | null {

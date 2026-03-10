@@ -1,6 +1,8 @@
 import { NextResponse } from 'next/server'
 import { getNewReleases } from '@/lib/spotify'
 
+export const runtime = 'nodejs'
+
 export async function GET() {
   try {
     const albums = await getNewReleases(12)
@@ -16,6 +18,6 @@ export async function GET() {
     return NextResponse.json({ albums: formatted })
   } catch (err) {
     console.error('[new-releases] error:', err)
-    return NextResponse.json({ error: 'Failed to fetch new releases' }, { status: 500 })
+    return NextResponse.json({ albums: [], error: String(err) })
   }
 }
