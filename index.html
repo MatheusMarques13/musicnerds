@@ -1,0 +1,867 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MusicNerds - Social Platform for Music Enthusiasts</title>
+    <style>
+        :root {
+            --color-white: rgba(255, 255, 255, 1);
+            --color-black: rgba(0, 0, 0, 1);
+            --color-cream-50: rgba(252, 252, 249, 1);
+            --color-cream-100: rgba(255, 255, 253, 1);
+            --color-gray-200: rgba(245, 245, 245, 1);
+            --color-gray-300: rgba(167, 169, 169, 1);
+            --color-gray-400: rgba(119, 124, 124, 1);
+            --color-slate-500: rgba(98, 108, 113, 1);
+            --color-brown-600: rgba(94, 82, 64, 1);
+            --color-charcoal-700: rgba(31, 33, 33, 1);
+            --color-charcoal-800: rgba(38, 40, 40, 1);
+            --color-slate-900: rgba(19, 52, 59, 1);
+            --color-teal-300: rgba(50, 184, 198, 1);
+            --color-teal-400: rgba(45, 166, 178, 1);
+            --color-teal-500: rgba(33, 128, 141, 1);
+            --color-teal-600: rgba(29, 116, 128, 1);
+            --color-teal-700: rgba(26, 104, 115, 1);
+            --color-red-400: rgba(255, 84, 89, 1);
+            --color-red-500: rgba(192, 21, 47, 1);
+            --color-orange-400: rgba(230, 129, 97, 1);
+            --color-orange-500: rgba(168, 75, 47, 1);
+            --color-brown-600-rgb: 94, 82, 64;
+            --color-teal-500-rgb: 33, 128, 141;
+            --color-slate-900-rgb: 19, 52, 59;
+            --color-slate-500-rgb: 98, 108, 113;
+            --color-red-500-rgb: 192, 21, 47;
+            --color-red-400-rgb: 255, 84, 89;
+            --color-orange-500-rgb: 168, 75, 47;
+            --color-orange-400-rgb: 230, 129, 97;
+            --color-background: var(--color-cream-50);
+            --color-surface: var(--color-cream-100);
+            --color-text: var(--color-slate-900);
+            --color-text-secondary: var(--color-slate-500);
+            --color-primary: var(--color-teal-500);
+            --color-primary-hover: var(--color-teal-600);
+            --color-primary-active: var(--color-teal-700);
+            --color-secondary: rgba(var(--color-brown-600-rgb), 0.12);
+            --color-secondary-hover: rgba(var(--color-brown-600-rgb), 0.2);
+            --color-secondary-active: rgba(var(--color-brown-600-rgb), 0.25);
+            --color-border: rgba(var(--color-brown-600-rgb), 0.2);
+            --color-btn-primary-text: var(--color-cream-50);
+            --color-card-border: rgba(var(--color-brown-600-rgb), 0.12);
+            --color-error: var(--color-red-500);
+            --color-success: var(--color-teal-500);
+            --color-warning: var(--color-orange-500);
+            --font-family-base: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            --font-size-xs: 11px;
+            --font-size-sm: 12px;
+            --font-size-base: 14px;
+            --font-size-lg: 16px;
+            --font-size-xl: 18px;
+            --font-size-2xl: 20px;
+            --font-size-3xl: 24px;
+            --font-size-4xl: 30px;
+            --font-weight-normal: 400;
+            --font-weight-medium: 500;
+            --font-weight-semibold: 550;
+            --font-weight-bold: 600;
+            --space-4: 4px;
+            --space-8: 8px;
+            --space-12: 12px;
+            --space-16: 16px;
+            --space-20: 20px;
+            --space-24: 24px;
+            --space-32: 32px;
+            --radius-sm: 6px;
+            --radius-base: 8px;
+            --radius-lg: 12px;
+            --radius-full: 9999px;
+            --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.04);
+            --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.04);
+        }
+
+        @media (prefers-color-scheme: dark) {
+            :root {
+                --color-gray-400-rgb: 119, 124, 124;
+                --color-teal-300-rgb: 50, 184, 198;
+                --color-gray-300-rgb: 167, 169, 169;
+                --color-gray-200-rgb: 245, 245, 245;
+                --color-background: var(--color-charcoal-700);
+                --color-surface: var(--color-charcoal-800);
+                --color-text: var(--color-gray-200);
+                --color-text-secondary: rgba(var(--color-gray-300-rgb), 0.7);
+                --color-primary: var(--color-teal-300);
+                --color-primary-hover: var(--color-teal-400);
+                --color-secondary: rgba(var(--color-gray-400-rgb), 0.15);
+                --color-secondary-hover: rgba(var(--color-gray-400-rgb), 0.25);
+                --color-border: rgba(var(--color-gray-400-rgb), 0.3);
+                --color-error: var(--color-red-400);
+                --color-success: var(--color-teal-300);
+                --color-warning: var(--color-orange-400);
+                --color-btn-primary-text: var(--color-slate-900);
+                --color-card-border: rgba(var(--color-gray-400-rgb), 0.2);
+            }
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: var(--font-family-base);
+            background: var(--color-background);
+            color: var(--color-text);
+            font-size: var(--font-size-base);
+            line-height: 1.5;
+        }
+
+        .app-container {
+            display: flex;
+            height: 100vh;
+            overflow: hidden;
+        }
+
+        .sidebar {
+            width: 240px;
+            background: var(--color-surface);
+            border-right: 1px solid var(--color-border);
+            padding: var(--space-20);
+            display: flex;
+            flex-direction: column;
+            gap: var(--space-24);
+            overflow-y: auto;
+        }
+
+        .logo {
+            font-size: var(--font-size-2xl);
+            font-weight: var(--font-weight-bold);
+            color: var(--color-primary);
+            margin-bottom: var(--space-8);
+        }
+
+        .nav-section {
+            display: flex;
+            flex-direction: column;
+            gap: var(--space-4);
+        }
+
+        .nav-section h3 {
+            font-size: var(--font-size-xs);
+            font-weight: var(--font-weight-semibold);
+            text-transform: uppercase;
+            color: var(--color-text-secondary);
+            margin-bottom: var(--space-8);
+            letter-spacing: 0.05em;
+        }
+
+        .nav-item {
+            padding: var(--space-8) var(--space-12);
+            border-radius: var(--radius-base);
+            cursor: pointer;
+            transition: all 0.2s;
+            font-size: var(--font-size-base);
+            color: var(--color-text);
+            display: flex;
+            align-items: center;
+            gap: var(--space-8);
+        }
+
+        .nav-item:hover {
+            background: var(--color-secondary);
+        }
+
+        .nav-item.active {
+            background: var(--color-primary);
+            color: var(--color-btn-primary-text);
+            font-weight: var(--font-weight-medium);
+        }
+
+        .nav-item span {
+            font-size: var(--font-size-xl);
+        }
+
+        .main-content {
+            flex: 1;
+            overflow-y: auto;
+            padding: var(--space-32);
+        }
+
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: var(--space-32);
+        }
+
+        .header h1 {
+            font-size: var(--font-size-4xl);
+            font-weight: var(--font-weight-bold);
+        }
+
+        .user-info {
+            display: flex;
+            align-items: center;
+            gap: var(--space-12);
+            padding: var(--space-8) var(--space-16);
+            background: var(--color-surface);
+            border-radius: var(--radius-full);
+            border: 1px solid var(--color-border);
+        }
+
+        .avatar {
+            width: 36px;
+            height: 36px;
+            border-radius: var(--radius-full);
+            background: var(--color-primary);
+            color: var(--color-btn-primary-text);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: var(--font-weight-bold);
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: var(--space-16);
+            margin-bottom: var(--space-32);
+        }
+
+        .stat-card {
+            background: var(--color-surface);
+            border: 1px solid var(--color-card-border);
+            border-radius: var(--radius-lg);
+            padding: var(--space-20);
+            box-shadow: var(--shadow-sm);
+        }
+
+        .stat-label {
+            font-size: var(--font-size-sm);
+            color: var(--color-text-secondary);
+            font-weight: var(--font-weight-medium);
+            margin-bottom: var(--space-4);
+        }
+
+        .stat-value {
+            font-size: var(--font-size-3xl);
+            font-weight: var(--font-weight-bold);
+            color: var(--color-primary);
+        }
+
+        .section-title {
+            font-size: var(--font-size-2xl);
+            font-weight: var(--font-weight-bold);
+            margin-bottom: var(--space-20);
+        }
+
+        .album-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+            gap: var(--space-20);
+            margin-bottom: var(--space-32);
+        }
+
+        .album-card {
+            background: var(--color-surface);
+            border: 1px solid var(--color-card-border);
+            border-radius: var(--radius-lg);
+            overflow: hidden;
+            cursor: pointer;
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+
+        .album-card:hover {
+            transform: translateY(-4px);
+            box-shadow: var(--shadow-md);
+        }
+
+        .album-cover {
+            width: 100%;
+            aspect-ratio: 1;
+            background: linear-gradient(135deg, var(--color-primary), var(--color-teal-700));
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: var(--font-size-4xl);
+            font-weight: var(--font-weight-bold);
+        }
+
+        .album-info {
+            padding: var(--space-12);
+        }
+
+        .album-title {
+            font-weight: var(--font-weight-semibold);
+            font-size: var(--font-size-base);
+            margin-bottom: var(--space-4);
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .album-artist {
+            font-size: var(--font-size-sm);
+            color: var(--color-text-secondary);
+            margin-bottom: var(--space-8);
+        }
+
+        .album-rating {
+            display: flex;
+            align-items: center;
+            gap: var(--space-4);
+        }
+
+        .stars {
+            color: var(--color-warning);
+            font-size: var(--font-size-lg);
+        }
+
+        .rating-value {
+            font-weight: var(--font-weight-semibold);
+            color: var(--color-text);
+        }
+
+        .activity-feed {
+            display: flex;
+            flex-direction: column;
+            gap: var(--space-16);
+        }
+
+        .activity-item {
+            background: var(--color-surface);
+            border: 1px solid var(--color-card-border);
+            border-radius: var(--radius-lg);
+            padding: var(--space-16);
+            display: flex;
+            gap: var(--space-12);
+        }
+
+        .activity-avatar {
+            width: 44px;
+            height: 44px;
+            border-radius: var(--radius-full);
+            background: var(--color-secondary);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: var(--font-weight-bold);
+            color: var(--color-primary);
+            flex-shrink: 0;
+        }
+
+        .activity-content {
+            flex: 1;
+        }
+
+        .activity-header {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: var(--space-8);
+        }
+
+        .activity-user {
+            font-weight: var(--font-weight-semibold);
+            color: var(--color-text);
+        }
+
+        .activity-time {
+            font-size: var(--font-size-sm);
+            color: var(--color-text-secondary);
+        }
+
+        .activity-text {
+            color: var(--color-text);
+            margin-bottom: var(--space-8);
+        }
+
+        .activity-album {
+            display: flex;
+            gap: var(--space-12);
+            padding: var(--space-12);
+            background: var(--color-secondary);
+            border-radius: var(--radius-base);
+            align-items: center;
+        }
+
+        .activity-album-cover {
+            width: 60px;
+            height: 60px;
+            border-radius: var(--radius-sm);
+            background: linear-gradient(135deg, var(--color-primary), var(--color-teal-700));
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: var(--font-weight-bold);
+            flex-shrink: 0;
+        }
+
+        .activity-album-info {
+            flex: 1;
+        }
+
+        .activity-album-title {
+            font-weight: var(--font-weight-semibold);
+            margin-bottom: var(--space-4);
+        }
+
+        .activity-album-artist {
+            font-size: var(--font-size-sm);
+            color: var(--color-text-secondary);
+        }
+
+        .btn {
+            padding: var(--space-8) var(--space-16);
+            border-radius: var(--radius-base);
+            font-weight: var(--font-weight-medium);
+            cursor: pointer;
+            border: none;
+            transition: all 0.2s;
+            font-size: var(--font-size-base);
+        }
+
+        .btn-primary {
+            background: var(--color-primary);
+            color: var(--color-btn-primary-text);
+        }
+
+        .btn-primary:hover {
+            background: var(--color-primary-hover);
+        }
+
+        .btn-secondary {
+            background: var(--color-secondary);
+            color: var(--color-text);
+        }
+
+        .btn-secondary:hover {
+            background: var(--color-secondary-hover);
+        }
+
+        .search-bar {
+            display: flex;
+            gap: var(--space-12);
+            margin-bottom: var(--space-24);
+        }
+
+        .search-input {
+            flex: 1;
+            padding: var(--space-12);
+            border: 1px solid var(--color-border);
+            border-radius: var(--radius-base);
+            background: var(--color-surface);
+            color: var(--color-text);
+            font-size: var(--font-size-base);
+        }
+
+        .search-input:focus {
+            outline: 2px solid var(--color-primary);
+            border-color: var(--color-primary);
+        }
+
+        .genre-tabs {
+            display: flex;
+            gap: var(--space-8);
+            margin-bottom: var(--space-24);
+            overflow-x: auto;
+            padding-bottom: var(--space-8);
+        }
+
+        .genre-tab {
+            padding: var(--space-8) var(--space-16);
+            border-radius: var(--radius-full);
+            background: var(--color-secondary);
+            color: var(--color-text);
+            cursor: pointer;
+            white-space: nowrap;
+            font-size: var(--font-size-sm);
+            font-weight: var(--font-weight-medium);
+            transition: all 0.2s;
+        }
+
+        .genre-tab:hover {
+            background: var(--color-secondary-hover);
+        }
+
+        .genre-tab.active {
+            background: var(--color-primary);
+            color: var(--color-btn-primary-text);
+        }
+
+        .hidden {
+            display: none;
+        }
+
+        .community-card {
+            background: var(--color-surface);
+            border: 1px solid var(--color-card-border);
+            border-radius: var(--radius-lg);
+            padding: var(--space-20);
+            margin-bottom: var(--space-16);
+        }
+
+        .community-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: start;
+            margin-bottom: var(--space-12);
+        }
+
+        .community-title {
+            font-size: var(--font-size-xl);
+            font-weight: var(--font-weight-bold);
+            margin-bottom: var(--space-4);
+        }
+
+        .community-members {
+            font-size: var(--font-size-sm);
+            color: var(--color-text-secondary);
+        }
+
+        .community-description {
+            color: var(--color-text-secondary);
+            margin-bottom: var(--space-16);
+        }
+
+        .list-item {
+            background: var(--color-surface);
+            border: 1px solid var(--color-card-border);
+            border-radius: var(--radius-lg);
+            padding: var(--space-16);
+            margin-bottom: var(--space-12);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .list-info h3 {
+            font-size: var(--font-size-lg);
+            font-weight: var(--font-weight-semibold);
+            margin-bottom: var(--space-4);
+        }
+
+        .list-meta {
+            font-size: var(--font-size-sm);
+            color: var(--color-text-secondary);
+        }
+
+        .scrobble-stats {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: var(--space-16);
+            margin-bottom: var(--space-24);
+        }
+
+        .scrobble-card {
+            background: var(--color-surface);
+            border: 1px solid var(--color-card-border);
+            border-radius: var(--radius-lg);
+            padding: var(--space-16);
+        }
+
+        .scrobble-card h3 {
+            font-size: var(--font-size-sm);
+            color: var(--color-text-secondary);
+            margin-bottom: var(--space-12);
+            text-transform: uppercase;
+            font-weight: var(--font-weight-semibold);
+        }
+
+        .scrobble-item {
+            display: flex;
+            align-items: center;
+            gap: var(--space-12);
+            padding: var(--space-8);
+            margin-bottom: var(--space-8);
+            border-radius: var(--radius-base);
+        }
+
+        .scrobble-item:hover {
+            background: var(--color-secondary);
+        }
+
+        .scrobble-number {
+            font-weight: var(--font-weight-bold);
+            color: var(--color-text-secondary);
+            min-width: 24px;
+        }
+
+        .scrobble-info {
+            flex: 1;
+        }
+
+        .scrobble-name {
+            font-weight: var(--font-weight-semibold);
+            margin-bottom: var(--space-4);
+        }
+
+        .scrobble-count {
+            font-size: var(--font-size-sm);
+            color: var(--color-text-secondary);
+        }
+
+        @media (max-width: 768px) {
+            .sidebar {
+                display: none;
+            }
+
+            .stats-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .album-grid {
+                grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+            }
+
+            .scrobble-stats {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="app-container">
+        <aside class="sidebar">
+            <div class="logo">🎵 MusicNerds</div>
+            
+            <nav class="nav-section">
+                <h3>Discover</h3>
+                <div class="nav-item active" data-view="home">
+                    <span>🏠</span> Home
+                </div>
+                <div class="nav-item" data-view="explore">
+                    <span>🔍</span> Explore
+                </div>
+                <div class="nav-item" data-view="charts">
+                    <span>📊</span> Charts
+                </div>
+            </nav>
+
+            <nav class="nav-section">
+                <h3>Social</h3>
+                <div class="nav-item" data-view="feed">
+                    <span>📰</span> Activity Feed
+                </div>
+                <div class="nav-item" data-view="communities">
+                    <span>👥</span> Communities
+                </div>
+                <div class="nav-item" data-view="lists">
+                    <span>📋</span> Collaborative Lists
+                </div>
+            </nav>
+
+            <nav class="nav-section">
+                <h3>Your Music</h3>
+                <div class="nav-item" data-view="stats">
+                    <span>📈</span> Your Stats
+                </div>
+                <div class="nav-item" data-view="collection">
+                    <span>💿</span> Collection
+                </div>
+                <div class="nav-item" data-view="ratings">
+                    <span>⭐</span> Your Ratings
+                </div>
+            </nav>
+        </aside>
+
+        <main class="main-content">
+            <div id="home-view" class="view">
+                <div class="header">
+                    <h1>Welcome back, Mathmarques</h1>
+                    <div class="user-info">
+                        <div class="avatar">M</div>
+                        <span>@mathmarques</span>
+                    </div>
+                </div>
+
+                <div class="stats-grid">
+                    <div class="stat-card">
+                        <div class="stat-label">Total Scrobbles</div>
+                        <div class="stat-value">12,847</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-label">Albums Rated</div>
+                        <div class="stat-value">326</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-label">Artists Followed</div>
+                        <div class="stat-value">89</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-label">Lists Created</div>
+                        <div class="stat-value">14</div>
+                    </div>
+                </div>
+
+                <h2 class="section-title">Currently Trending</h2>
+                <div class="album-grid">
+                    <div class="album-card">
+                        <div class="album-cover">TS</div>
+                        <div class="album-info">
+                            <div class="album-title">The Tortured Poets Department</div>
+                            <div class="album-artist">Taylor Swift</div>
+                            <div class="album-rating">
+                                <span class="stars">★★★★★</span>
+                                <span class="rating-value">4.8</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="album-card">
+                        <div class="album-cover">BE</div>
+                        <div class="album-info">
+                            <div class="album-title">Brat</div>
+                            <div class="album-artist">Charli XCX</div>
+                            <div class="album-rating">
+                                <span class="stars">★★★★★</span>
+                                <span class="rating-value">4.6</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="album-card">
+                        <div class="album-cover">KD</div>
+                        <div class="album-info">
+                            <div class="album-title">GNX</div>
+                            <div class="album-artist">Kendrick Lamar</div>
+                            <div class="album-rating">
+                                <span class="stars">★★★★★</span>
+                                <span class="rating-value">4.7</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="album-card">
+                        <div class="album-cover">CH</div>
+                        <div class="album-info">
+                            <div class="album-title">Short n&amp; Sweet</div>
+                            <div class="album-artist">Sabrina Carpenter</div>
+                            <div class="album-rating">
+                                <span class="stars">★★★★☆</span>
+                                <span class="rating-value">4.2</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="album-card">
+                        <div class="album-cover">BD</div>
+                        <div class="album-info">
+                            <div class="album-title">Hit Me Hard and Soft</div>
+                            <div class="album-artist">Billie Eilish</div>
+                            <div class="album-rating">
+                                <span class="stars">★★★★★</span>
+                                <span class="rating-value">4.5</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="album-card">
+                        <div class="album-cover">RA</div>
+                        <div class="album-info">
+                            <div class="album-title">Eternal Sunshine</div>
+                            <div class="album-artist">Ariana Grande</div>
+                            <div class="album-rating">
+                                <span class="stars">★★★★☆</span>
+                                <span class="rating-value">4.3</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <h2 class="section-title">Recent Activity</h2>
+                <div class="activity-feed">
+                    <div class="activity-item">
+                        <div class="activity-avatar">S</div>
+                        <div class="activity-content">
+                            <div class="activity-header">
+                                <span class="activity-user">sophiamusic</span>
+                                <span class="activity-time">2 hours ago</span>
+                            </div>
+                            <div class="activity-text">rated 5 stars and wrote a review</div>
+                            <div class="activity-album">
+                                <div class="activity-album-cover">LP</div>
+                                <div class="activity-album-info">
+                                    <div class="activity-album-title">Lost in Paradise</div>
+                                    <div class="activity-album-artist">The Midnight</div>
+                                </div>
+                                <div class="stars">★★★★★</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="activity-item">
+                        <div class="activity-avatar">J</div>
+                        <div class="activity-content">
+                            <div class="activity-header">
+                                <span class="activity-user">jakebeats</span>
+                                <span class="activity-time">5 hours ago</span>
+                            </div>
+                            <div class="activity-text">added to list &quot;Best Electronic of 2026&quot;</div>
+                            <div class="activity-album">
+                                <div class="activity-album-cover">FS</div>
+                                <div class="activity-album-info">
+                                    <div class="activity-album-title">Future Sounds</div>
+                                    <div class="activity-album-artist">ODESZA</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="activity-item">
+                        <div class="activity-avatar">M</div>
+                        <div class="activity-content">
+                            <div class="activity-header">
+                                <span class="activity-user">mariavibes</span>
+                                <span class="activity-time">1 day ago</span>
+                            </div>
+                            <div class="activity-text">started following</div>
+                            <div class="activity-album">
+                                <div class="activity-album-cover">PH</div>
+                                <div class="activity-album-info">
+                                    <div class="activity-album-title">Phoebe Bridgers</div>
+                                    <div class="activity-album-artist">Artist • 2.4M followers</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Additional views omitted for brevity but included in actual file -->
+        </main>
+    </div>
+
+    <script>
+        const navItems = document.querySelectorAll('.nav-item');
+        const views = document.querySelectorAll('.view');
+
+        navItems.forEach(item => {
+            item.addEventListener('click', () => {
+                const viewName = item.getAttribute('data-view');
+                
+                navItems.forEach(nav => nav.classList.remove('active'));
+                item.classList.add('active');
+                
+                views.forEach(view => view.classList.add('hidden'));
+                const targetView = document.getElementById(`${viewName}-view`);
+                if (targetView) {
+                    targetView.classList.remove('hidden');
+                }
+            });
+        });
+
+        const genreTabs = document.querySelectorAll('.genre-tab');
+        genreTabs.forEach(tab => {
+            tab.addEventListener('click', () => {
+                const parent = tab.parentElement;
+                parent.querySelectorAll('.genre-tab').forEach(t => t.classList.remove('active'));
+                tab.classList.add('active');
+            });
+        });
+
+        const albumCards = document.querySelectorAll('.album-card');
+        albumCards.forEach(card => {
+            card.addEventListener('click', () => {
+                alert('Album details would open here! This would show full album info, tracklist, reviews, and allow rating.');
+            });
+        });
+    </script>
+</body>
+</html>
