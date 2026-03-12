@@ -1,72 +1,95 @@
 'use client'
 
-import { usePathname } from 'next/navigation'
 import Link from 'next/link'
-import { Home, Search, BarChart2, Newspaper, Users, List, TrendingUp, Disc, Star } from 'lucide-react'
-import { cn } from '@/lib/utils'
+import { usePathname } from 'next/navigation'
+import {
+  Home, Search, BarChart2, Rss,
+  Users, List, TrendingUp, Archive, Star, Music2
+} from 'lucide-react'
 
-const navSections = [
-  {
-    title: 'Discover',
-    items: [
-      { label: 'Home', icon: Home, href: '/' },
-      { label: 'Explore', icon: Search, href: '/explore' },
-      { label: 'Charts', icon: BarChart2, href: '/charts' },
-    ],
-  },
-  {
-    title: 'Social',
-    items: [
-      { label: 'Activity Feed', icon: Newspaper, href: '/feed' },
-      { label: 'Communities', icon: Users, href: '/communities' },
-      { label: 'Collaborative Lists', icon: List, href: '/lists' },
-    ],
-  },
-  {
-    title: 'Your Music',
-    items: [
-      { label: 'Your Stats', icon: TrendingUp, href: '/stats' },
-      { label: 'Collection', icon: Disc, href: '/collection' },
-      { label: 'Your Ratings', icon: Star, href: '/ratings' },
-    ],
-  },
+const nav = [
+  { label: 'DISCOVER', items: [
+    { href: '/', icon: Home, label: 'Home' },
+    { href: '/explore', icon: Search, label: 'Explore' },
+    { href: '/charts', icon: BarChart2, label: 'Charts' },
+  ]},
+  { label: 'SOCIAL', items: [
+    { href: '/feed', icon: Rss, label: 'Activity Feed' },
+    { href: '/communities', icon: Users, label: 'Communities' },
+    { href: '/lists', icon: List, label: 'Collaborative Lists' },
+  ]},
+  { label: 'YOUR MUSIC', items: [
+    { href: '/stats', icon: TrendingUp, label: 'Your Stats' },
+    { href: '/collection', icon: Archive, label: 'Collection' },
+    { href: '/ratings', icon: Star, label: 'Your Ratings' },
+  ]},
 ]
 
 export function Sidebar() {
   const pathname = usePathname()
 
   return (
-    <aside className="w-60 bg-cream-100 dark:bg-charcoal-800 border-r border-brown-600/20 dark:border-gray-400/30 p-5 flex flex-col gap-6 overflow-y-auto shrink-0">
-      <div className="text-xl font-bold text-teal-500 dark:text-teal-300 mb-2">
-        🎵 MusicNerds
+    <aside
+      className="hidden md:flex flex-col w-60 shrink-0 h-screen sticky top-0 border-r overflow-y-auto"
+      style={{
+        backgroundColor: 'rgba(244, 241, 234, 0.92)',
+        borderColor: 'var(--border)',
+        backdropFilter: 'blur(12px)',
+      }}
+    >
+      {/* Logo */}
+      <div className="px-6 py-7 border-b" style={{ borderColor: 'var(--border)' }}>
+        <div className="flex items-center gap-2.5">
+          <div
+            className="w-8 h-8 rounded-lg flex items-center justify-center"
+            style={{ backgroundColor: 'var(--accent)' }}
+          >
+            <Music2 size={16} className="text-white" />
+          </div>
+          <span className="font-serif text-xl font-bold" style={{ color: 'var(--text)' }}>MusicNerds</span>
+        </div>
       </div>
 
-      {navSections.map((section) => (
-        <nav key={section.title} className="flex flex-col gap-1">
-          <h3 className="text-xs font-semibold uppercase text-slate-500 dark:text-gray-300/70 mb-2 tracking-wide">
-            {section.title}
-          </h3>
-          {section.items.map((item) => {
-            const Icon = item.icon
-            const isActive = pathname === item.href
-            return (
-              <Link
-                key={item.href}
-                href={item.href}
-                className={cn(
-                  'flex items-center gap-2 px-3 py-2 rounded-lg text-sm transition-all duration-200',
-                  isActive
-                    ? 'bg-teal-500 dark:bg-teal-300 text-cream-50 dark:text-slate-900 font-medium'
-                    : 'text-slate-900 dark:text-gray-200 hover:bg-brown-600/12 dark:hover:bg-gray-400/15'
-                )}
-              >
-                <Icon size={16} />
-                {item.label}
-              </Link>
-            )
-          })}
-        </nav>
-      ))}
+      {/* Nav */}
+      <nav className="flex-1 px-3 py-5 flex flex-col gap-6">
+        {nav.map((group) => (
+          <div key={group.label}>
+            <p
+              className="px-3 mb-2 text-[10px] font-semibold tracking-[0.18em]"
+              style={{ color: 'var(--muted)' }}
+            >
+              {group.label}
+            </p>
+            <div className="flex flex-col gap-0.5">
+              {group.items.map(({ href, icon: Icon, label }) => {
+                const active = pathname === href
+                return (
+                  <Link
+                    key={href}
+                    href={href}
+                    className="flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-medium transition-all"
+                    style={{
+                      backgroundColor: active ? 'rgba(33,128,141,0.10)' : 'transparent',
+                      color: active ? 'var(--accent)' : 'var(--muted)',
+                      borderLeft: active ? '2.5px solid var(--accent)' : '2.5px solid transparent',
+                    }}
+                  >
+                    <Icon size={16} />
+                    {label}
+                  </Link>
+                )
+              })}
+            </div>
+          </div>
+        ))}
+      </nav>
+
+      {/* Footer */}
+      <div className="px-6 py-5 border-t" style={{ borderColor: 'var(--border)' }}>
+        <p className="text-[11px]" style={{ color: 'var(--muted)' }}>
+          MusicNerds © 2026
+        </p>
+      </div>
     </aside>
   )
 }

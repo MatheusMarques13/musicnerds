@@ -1,8 +1,21 @@
 import type { Metadata } from 'next'
+import { Inter, Playfair_Display } from 'next/font/google'
 import './globals.css'
 
+const inter = Inter({
+  subsets: ['latin'],
+  variable: '--font-sans',
+  display: 'swap',
+})
+
+const playfair = Playfair_Display({
+  subsets: ['latin'],
+  variable: '--font-serif',
+  display: 'swap',
+})
+
 export const metadata: Metadata = {
-  title: 'MusicNerds - Social Platform for Music Enthusiasts',
+  title: 'MusicNerds — Social Platform for Music Enthusiasts',
   description: 'Rate albums, track listening stats, join communities, and discover new music.',
   keywords: ['music', 'albums', 'ratings', 'social', 'scrobbles'],
   openGraph: {
@@ -12,14 +25,10 @@ export const metadata: Metadata = {
   },
 }
 
-export default function RootLayout({
-  children,
-}: {
-  children: React.ReactNode
-}) {
+export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
-    <html lang="en" suppressHydrationWarning>
-      <body className="bg-cream-50 dark:bg-charcoal-700 text-slate-900 dark:text-gray-200 antialiased">
+    <html lang="en" suppressHydrationWarning className={`${inter.variable} ${playfair.variable}`}>
+      <body className="antialiased">
         {children}
       </body>
     </html>

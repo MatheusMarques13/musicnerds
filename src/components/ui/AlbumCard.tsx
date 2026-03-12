@@ -23,10 +23,8 @@ export function AlbumCard({ title, artist, rating, coverUrl, initials, spotifyId
   function handleClick() {
     if (onClick) { onClick(); return }
     if (spotifyId) {
-      // Store metadata in sessionStorage so detail page can use it
       sessionStorage.setItem(`album_${spotifyId}`, JSON.stringify({
-        title,
-        artist,
+        title, artist,
         cover_url: coverUrl ?? null,
         release_date: releaseYear ?? null,
         spotify_id: spotifyId,
@@ -38,38 +36,52 @@ export function AlbumCard({ title, artist, rating, coverUrl, initials, spotifyId
   return (
     <div
       onClick={handleClick}
-      className="bg-cream-100 dark:bg-charcoal-800 border border-brown-600/12 dark:border-gray-400/20 rounded-xl overflow-hidden cursor-pointer transition-all duration-200 hover:-translate-y-1 hover:shadow-md"
+      className="group rounded-2xl overflow-hidden cursor-pointer transition-all duration-200 border"
+      style={{
+        backgroundColor: 'var(--bg-card)',
+        borderColor: 'var(--border)',
+        boxShadow: 'var(--shadow-card)',
+      }}
+      onMouseEnter={(e) => (e.currentTarget.style.boxShadow = 'var(--shadow-hover)')}
+      onMouseLeave={(e) => (e.currentTarget.style.boxShadow = 'var(--shadow-card)')}
     >
-      <div className="relative w-full aspect-square bg-gradient-to-br from-teal-500 to-teal-700 overflow-hidden">
+      {/* Cover */}
+      <div
+        className="relative w-full aspect-square overflow-hidden"
+        style={{ backgroundColor: 'var(--accent)' }}
+      >
         {coverUrl ? (
           <Image
             src={coverUrl}
             alt={title}
             fill
             sizes="(max-width: 640px) 50vw, (max-width: 1024px) 33vw, 16vw"
-            className="object-cover"
+            className="object-cover transition-transform duration-300 group-hover:scale-105"
           />
         ) : (
-          <div className="w-full h-full flex items-center justify-center text-white text-3xl font-bold">
-            <span>{initials ?? title.slice(0, 2).toUpperCase()}</span>
+          <div className="w-full h-full flex items-center justify-center font-serif text-white text-3xl font-bold">
+            {initials ?? title.slice(0, 2).toUpperCase()}
           </div>
         )}
       </div>
+
+      {/* Info */}
       <div className="p-3">
-        <div className="font-semibold text-sm truncate mb-1">{title}</div>
-        <div className="text-xs text-slate-500 dark:text-gray-300/70 mb-2 truncate">{artist}</div>
+        <p className="text-sm font-semibold truncate" style={{ color: 'var(--text)' }}>{title}</p>
+        <p className="text-xs truncate mt-0.5" style={{ color: 'var(--muted)' }}>{artist}</p>
         {rating > 0 && (
-          <div className="flex items-center gap-1">
-            <div className="flex text-amber-500">
-              {Array.from({ length: 5 }).map((_, i) => (
-                <Star
-                  key={i}
-                  size={14}
-                  fill={i < fullStars || (i === fullStars && hasHalf) ? 'currentColor' : 'none'}
-                />
-              ))}
-            </div>
-            <span className="text-xs font-semibold">{rating.toFixed(1)}</span>
+          <div className="flex items-center gap-1 mt-2">
+            {Array.from({ length: 5 }).map((_, i) => (
+              <Star
+                key={i}
+                size={11}
+                style={{ color: 'var(--accent-warm)' }}
+                fill={i < fullStars || (i === fullStars && hasHalf) ? 'var(--accent-warm)' : 'none'}
+              />
+            ))}
+            <span className="text-[11px] font-medium ml-0.5" style={{ color: 'var(--muted)' }}>
+              {rating.toFixed(1)}
+            </span>
           </div>
         )}
       </div>
