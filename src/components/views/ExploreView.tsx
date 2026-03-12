@@ -73,6 +73,7 @@ export function ExploreView() {
               coverUrl={album.cover_url ?? undefined}
               initials={album.title?.slice(0, 2).toUpperCase()}
               spotifyId={album.spotify_id ?? album.id}
+              releaseYear={album.release_year ?? album.release_date?.split('-')[0]}
             />
           ))}
         </div>

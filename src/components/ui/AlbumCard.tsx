@@ -11,17 +11,25 @@ interface AlbumCardProps {
   coverUrl?: string
   initials?: string
   spotifyId?: string
+  releaseYear?: string
   onClick?: () => void
 }
 
-export function AlbumCard({ title, artist, rating, coverUrl, initials, spotifyId, onClick }: AlbumCardProps) {
+export function AlbumCard({ title, artist, rating, coverUrl, initials, spotifyId, releaseYear, onClick }: AlbumCardProps) {
   const router = useRouter()
   const fullStars = Math.floor(rating)
   const hasHalf = rating % 1 >= 0.5
 
   function handleClick() {
     if (onClick) { onClick(); return }
-    if (spotifyId) router.push(`/album/${spotifyId}`)
+    if (spotifyId) {
+      const params = new URLSearchParams()
+      if (title) params.set('title', title)
+      if (artist) params.set('artist', artist)
+      if (coverUrl) params.set('cover', coverUrl)
+      if (releaseYear) params.set('year', releaseYear)
+      router.push(`/album/${spotifyId}?${params.toString()}`)
+    }
   }
 
   return (

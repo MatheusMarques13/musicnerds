@@ -9,12 +9,12 @@ import { createClient } from '@/lib/supabase/client'
 import { Loader2 } from 'lucide-react'
 
 const fallbackAlbums = [
-  { id: '5H7ixXZfsNMGbIE5OBSpcb', title: 'The Tortured Poets Department', artist: 'Taylor Swift', rating: 4.8, initials: 'TS', spotify_id: '5H7ixXZfsNMGbIE5OBSpcb' },
-  { id: '2lIZef4lzdvZkiiCzvPwXK', title: 'Brat', artist: 'Charli XCX', rating: 4.6, initials: 'BR', spotify_id: '2lIZef4lzdvZkiiCzvPwXK' },
-  { id: '6PBZN8cbwkqm1ERj2BGXJ1', title: 'GNX', artist: 'Kendrick Lamar', rating: 4.7, initials: 'KD', spotify_id: '6PBZN8cbwkqm1ERj2BGXJ1' },
-  { id: '5S5GQZjt2n3xJbpE0TcZGy', title: "Short n' Sweet", artist: 'Sabrina Carpenter', rating: 4.2, initials: 'SC', spotify_id: '5S5GQZjt2n3xJbpE0TcZGy' },
-  { id: '7aJuWoE5s5MLdKe5xyaFSF', title: 'Hit Me Hard and Soft', artist: 'Billie Eilish', rating: 4.5, initials: 'BE', spotify_id: '7aJuWoE5s5MLdKe5xyaFSF' },
-  { id: '5vHDFbS2Y0MNIhFGaqnYEq', title: 'Eternal Sunshine', artist: 'Ariana Grande', rating: 4.3, initials: 'AG', spotify_id: '5vHDFbS2Y0MNIhFGaqnYEq' },
+  { id: '5H7ixXZfsNMGbIE5OBSpcb', title: 'The Tortured Poets Department', artist: 'Taylor Swift', rating: 4.8, initials: 'TS', spotify_id: '5H7ixXZfsNMGbIE5OBSpcb', release_year: '2024' },
+  { id: '2lIZef4lzdvZkiiCzvPwXK', title: 'Brat', artist: 'Charli XCX', rating: 4.6, initials: 'BR', spotify_id: '2lIZef4lzdvZkiiCzvPwXK', release_year: '2024' },
+  { id: '6PBZN8cbwkqm1ERj2BGXJ1', title: 'GNX', artist: 'Kendrick Lamar', rating: 4.7, initials: 'KD', spotify_id: '6PBZN8cbwkqm1ERj2BGXJ1', release_year: '2024' },
+  { id: '5S5GQZjt2n3xJbpE0TcZGy', title: "Short n' Sweet", artist: 'Sabrina Carpenter', rating: 4.2, initials: 'SC', spotify_id: '5S5GQZjt2n3xJbpE0TcZGy', release_year: '2024' },
+  { id: '7aJuWoE5s5MLdKe5xyaFSF', title: 'Hit Me Hard and Soft', artist: 'Billie Eilish', rating: 4.5, initials: 'BE', spotify_id: '7aJuWoE5s5MLdKe5xyaFSF', release_year: '2024' },
+  { id: '5vHDFbS2Y0MNIhFGaqnYEq', title: 'Eternal Sunshine', artist: 'Ariana Grande', rating: 4.3, initials: 'AG', spotify_id: '5vHDFbS2Y0MNIhFGaqnYEq', release_year: '2024' },
 ]
 
 const recentActivity = [
@@ -75,6 +75,7 @@ export function HomeView() {
             coverUrl={album.cover_url ?? undefined}
             initials={album.initials ?? album.title?.slice(0, 2).toUpperCase()}
             spotifyId={album.spotify_id ?? album.id}
+            releaseYear={album.release_year ?? album.release_date?.split('-')[0]}
           />
         ))}
       </div>
