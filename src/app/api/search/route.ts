@@ -20,7 +20,6 @@ export async function GET(request: NextRequest) {
     const spotify = spotifyResult.status === 'fulfilled' ? spotifyResult.value : []
     const lastfm = lastfmResult.status === 'fulfilled' ? lastfmResult.value : []
 
-    // If Spotify worked, use it as primary source
     if (spotify.length > 0) {
       const merged = spotify.map((spItem: any) => ({
         id: spItem.id,
@@ -29,12 +28,12 @@ export async function GET(request: NextRequest) {
         cover_url: spItem.images?.[1]?.url ?? spItem.images?.[0]?.url ?? null,
         release_year: spItem.release_date?.split('-')[0] ?? '',
         spotify_id: spItem.id,
+        spotify_url: spItem.external_urls?.spotify ?? `https://open.spotify.com/album/${spItem.id}`,
         total_tracks: spItem.total_tracks,
       }))
       return NextResponse.json({ results: merged, total: merged.length, source: 'spotify' })
     }
 
-    // Fallback to Last.fm if Spotify failed
     if (lastfm.length > 0) {
       const merged = lastfm.map((lf: any) => ({
         id: lf.mbid || `${lf.name}-${lf.artist}`,
@@ -43,6 +42,7 @@ export async function GET(request: NextRequest) {
         cover_url: lf.image?.find((i: any) => i.size === 'extralarge')?.['#text'] || null,
         release_year: '',
         spotify_id: null,
+        spotify_url: null,
         total_tracks: null,
       }))
       return NextResponse.json({ results: merged, total: merged.length, source: 'lastfm' })
