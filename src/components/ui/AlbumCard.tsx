@@ -23,12 +23,15 @@ export function AlbumCard({ title, artist, rating, coverUrl, initials, spotifyId
   function handleClick() {
     if (onClick) { onClick(); return }
     if (spotifyId) {
-      const params = new URLSearchParams()
-      if (title) params.set('title', title)
-      if (artist) params.set('artist', artist)
-      if (coverUrl) params.set('cover', coverUrl)
-      if (releaseYear) params.set('year', releaseYear)
-      router.push(`/album/${spotifyId}?${params.toString()}`)
+      // Store metadata in sessionStorage so detail page can use it
+      sessionStorage.setItem(`album_${spotifyId}`, JSON.stringify({
+        title,
+        artist,
+        cover_url: coverUrl ?? null,
+        release_date: releaseYear ?? null,
+        spotify_id: spotifyId,
+      }))
+      router.push(`/album/${spotifyId}`)
     }
   }
 
