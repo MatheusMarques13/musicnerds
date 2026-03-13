@@ -12,40 +12,69 @@ const genres = ['All', 'Pop', 'Rock', 'Hip-Hop', 'Electronic', 'Jazz', 'Classica
 export function ExploreView() {
   const [activeGenre, setActiveGenre] = useState('All')
   const { query, setQuery, results, loading: searchLoading } = useSearch()
-  const { albums: newReleases, loading: releasesLoading } = useNewReleases()
+  const { albums: newReleases, loading: releasesLoading }    = useNewReleases()
 
-  const isSearching = query.trim().length >= 2
+  const isSearching   = query.trim().length >= 2
   const displayAlbums = isSearching ? results : newReleases
 
   return (
     <>
       <Header title="Explore" />
 
-      <div className="relative mb-6">
-        <Search size={16} className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400" />
+      {/* Search bar */}
+      <div style={{ position: 'relative', marginBottom: 24 }}>
+        <Search
+          size={15}
+          style={{
+            position: 'absolute', left: 14, top: '50%', transform: 'translateY(-50%)',
+            color: 'var(--muted)', pointerEvents: 'none',
+          }}
+        />
         <input
           type="text"
-          placeholder="Search albums or artists..."
+          placeholder="Search albums or artists…"
           value={query}
           onChange={(e) => setQuery(e.target.value)}
-          className="w-full pl-10 pr-12 py-3 border border-brown-600/20 dark:border-gray-400/30 rounded-xl bg-cream-100 dark:bg-charcoal-800 text-sm focus:outline-none focus:ring-2 focus:ring-teal-500"
+          style={{
+            width: '100%', paddingLeft: 40, paddingRight: 44,
+            paddingTop: 12, paddingBottom: 12,
+            border: '1.5px solid var(--border)', borderRadius: 14,
+            background: 'var(--bg-card)', color: 'var(--text)', fontSize: 14,
+            outline: 'none', transition: 'border-color 0.15s', boxSizing: 'border-box',
+          }}
+          onFocus={(e) => (e.target.style.borderColor = 'var(--accent)')}
+          onBlur={(e)  => (e.target.style.borderColor = 'var(--border)')}
         />
         {searchLoading && (
-          <Loader2 size={16} className="absolute right-3 top-1/2 -translate-y-1/2 text-teal-500 animate-spin" />
+          <Loader2
+            size={15}
+            className="animate-spin"
+            style={{
+              position: 'absolute', right: 14, top: '50%', transform: 'translateY(-50%)',
+              color: 'var(--accent)',
+            }}
+          />
         )}
       </div>
 
+      {/* Genre pills */}
       {!isSearching && (
-        <div className="flex gap-2 mb-6 overflow-x-auto pb-2">
+        <div className="flex gap-2 mb-6 overflow-x-auto pb-1">
           {genres.map((g) => (
             <button
               key={g}
               onClick={() => setActiveGenre(g)}
-              className={`px-4 py-2 rounded-full text-xs font-medium whitespace-nowrap transition-all ${
-                activeGenre === g
-                  ? 'bg-teal-500 dark:bg-teal-300 text-cream-50 dark:text-slate-900'
-                  : 'bg-brown-600/12 dark:bg-gray-400/15 hover:bg-brown-600/20'
-              }`}
+              className="whitespace-nowrap transition-all"
+              style={{
+                padding: '7px 16px',
+                borderRadius: 100,
+                fontSize: 12,
+                fontWeight: 500,
+                cursor: 'pointer',
+                border: 'none',
+                backgroundColor: activeGenre === g ? 'var(--accent)' : 'rgba(33,128,141,0.09)',
+                color: activeGenre === g ? 'white' : 'var(--muted)',
+              }}
             >
               {g}
             </button>
@@ -53,17 +82,26 @@ export function ExploreView() {
         </div>
       )}
 
-      <div className="flex items-center justify-between mb-4">
-        <h2 className="text-sm font-semibold text-slate-500 dark:text-gray-400 uppercase tracking-wide">
+      {/* Count */}
+      <div className="flex items-center justify-between mb-5">
+        <p
+          className="text-[11px] font-semibold uppercase tracking-[0.14em]"
+          style={{ color: 'var(--muted)' }}
+        >
           {isSearching
-            ? `${results.length} results for "${query}"`
-            : releasesLoading ? 'Loading...' : `${newReleases.length} new releases`}
-        </h2>
-        {releasesLoading && !isSearching && <Loader2 size={16} className="animate-spin text-teal-500" />}
+            ? `${results.length} result${results.length !== 1 ? 's' : ''} for "${query}"`
+            : releasesLoading
+            ? 'Loading…'
+            : `${newReleases.length} new releases`}
+        </p>
+        {releasesLoading && !isSearching && (
+          <Loader2 size={15} className="animate-spin" style={{ color: 'var(--accent)' }} />
+        )}
       </div>
 
+      {/* Album grid */}
       {displayAlbums.length > 0 ? (
-        <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-6 gap-5">
+        <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-6 gap-4">
           {displayAlbums.map((album: any) => (
             <AlbumCard
               key={album.id ?? album.title}
@@ -78,9 +116,13 @@ export function ExploreView() {
           ))}
         </div>
       ) : !releasesLoading && !searchLoading ? (
-        <div className="text-center py-20 text-slate-400">
-          <p className="text-4xl mb-4">🎵</p>
-          <p>{isSearching ? `No results for "${query}"` : 'No albums found'}</p>
+        <div className="text-center py-20">
+          <p className="font-serif text-2xl mb-3" style={{ color: 'var(--text)' }}>
+            {isSearching ? `No results for "${query}"` : 'No albums found'}
+          </p>
+          <p className="text-sm" style={{ color: 'var(--muted)' }}>
+            {isSearching ? 'Try a different search term.' : 'Check back soon for new releases.'}
+          </p>
         </div>
       ) : null}
     </>

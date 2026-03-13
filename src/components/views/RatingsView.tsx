@@ -1,24 +1,23 @@
-import { Header } from '@/components/layout/Header'
-import { Star } from 'lucide-react'
+'use client'
 
-const ratings = [
-  { title: 'folklore', artist: 'Taylor Swift', rating: 5.0, initials: 'FL', review: 'A masterpiece of intimacy and storytelling. Every track is perfect.' },
-  { title: 'Blonde', artist: 'Frank Ocean', rating: 5.0, initials: 'BL', review: 'Emotionally devastatingly beautiful. A generational album.' },
-  { title: 'GNX', artist: 'Kendrick Lamar', rating: 4.7, initials: 'GN', review: 'Lamar at his most focused and brutal. A statement album.' },
-  { title: 'Brat', artist: 'Charli XCX', rating: 4.6, initials: 'BR', review: 'The sound of the summer, perfectly executed.' },
-  { title: 'In Rainbows', artist: 'Radiohead', rating: 4.9, initials: 'IR', review: 'Radiohead\'s most accessible album without sacrificing depth.' },
-  { title: 'Short n\' Sweet', artist: 'Sabrina Carpenter', rating: 4.2, initials: 'SC', review: 'Incredibly fun pop. Tight runtime, no filler.' },
-]
+import { useEffect, useState } from 'react'
+import Image from 'next/image'
+import { useRouter } from 'next/navigation'
+import { createClient } from '@/lib/supabase/client'
+import { Header } from '@/components/layout/Header'
+import { Star, Loader2 } from 'lucide-react'
 
 function StarRow({ rating }: { rating: number }) {
+  const full = Math.floor(rating)
+  const half = rating % 1 >= 0.5
   return (
-    <div className="flex">
+    <div className="flex items-center gap-0.5">
       {Array.from({ length: 5 }).map((_, i) => (
         <Star
           key={i}
-          size={14}
-          className="text-amber-500"
-          fill={i < Math.floor(rating) ? 'currentColor' : 'none'}
+          size={13}
+          style={{ color: 'var(--accent-warm)' }}
+          fill={i < full || (i === full && half) ? 'var(--accent-warm)' : 'none'}
         />
       ))}
     </div>
@@ -26,34 +25,120 @@ function StarRow({ rating }: { rating: number }) {
 }
 
 export function RatingsView() {
+  const [ratings, setRatings] = useState<any[]>([])
+  const [loading, setLoading] = useState(true)
+  const supabase = createClient()
+  const router   = useRouter()
+
+  useEffect(() => {
+    async function load() {
+      const { data: { user } } = await supabase.auth.getUser()
+      if (!user) { router.push('/login'); return }
+
+      const { data, error } = await supabase
+        .from('ratings')
+        .select('rating, review, updated_at, albums(title, artist, cover_url, spotify_id)')
+        .eq('user_id', user.id)
+        .order('updated_at', { ascending: false })
+
+      if (error) console.error('[ratings]', error)
+      setRatings(data ?? [])
+      setLoading(false)
+    }
+    load()
+  }, [])
+
   return (
     <>
       <Header title="Your Ratings" />
 
-      <div className="flex flex-col gap-4">
-        {ratings.map((r) => (
-          <div key={r.title} className="bg-cream-100 dark:bg-charcoal-800 border border-brown-600/12 dark:border-gray-400/20 rounded-xl p-4 flex gap-4">
-            <div className="w-16 h-16 rounded-lg bg-gradient-to-br from-teal-500 to-teal-700 flex items-center justify-center text-white font-bold shrink-0">
-              {r.initials}
-            </div>
-            <div className="flex-1">
-              <div className="flex items-start justify-between mb-1">
-                <div>
-                  <h3 className="font-semibold">{r.title}</h3>
-                  <p className="text-sm text-slate-500 dark:text-gray-300/70">{r.artist}</p>
+      {loading ? (
+        <div className="flex items-center justify-center py-20">
+          <Loader2 size={24} className="animate-spin" style={{ color: 'var(--accent)' }} />
+        </div>
+      ) : ratings.length === 0 ? (
+        <div className="text-center py-24">
+          <p className="font-serif text-2xl mb-3" style={{ color: 'var(--text)' }}>No ratings yet</p>
+          <p className="text-sm" style={{ color: 'var(--muted)' }}>
+            Open any album page and tap the stars to rate it.
+          </p>
+        </div>
+      ) : (
+        <div className="flex flex-col gap-3">
+          {ratings.map((r: any, i) => {
+            const album = r.albums
+            const spotifyId = album?.spotify_id
+            return (
+              <div
+                key={i}
+                className="rounded-2xl border p-4 flex gap-4 cursor-pointer transition-all"
+                style={{
+                  backgroundColor: 'var(--bg-card)',
+                  borderColor: 'var(--border)',
+                  boxShadow: 'var(--shadow-card)',
+                }}
+                onMouseEnter={(e) => (e.currentTarget.style.boxShadow = 'var(--shadow-hover)')}
+                onMouseLeave={(e) => (e.currentTarget.style.boxShadow = 'var(--shadow-card)')}
+                onClick={() => spotifyId && router.push(`/album/${spotifyId}`)}
+              >
+                {/* Cover */}
+                <div className="w-16 h-16 rounded-xl overflow-hidden shrink-0" style={{ backgroundColor: 'var(--accent)' }}>
+                  {album?.cover_url ? (
+                    <Image
+                      src={album.cover_url}
+                      alt={album.title ?? ''}
+                      width={64}
+                      height={64}
+                      className="object-cover w-full h-full"
+                    />
+                  ) : (
+                    <div className="w-full h-full flex items-center justify-center text-white text-sm font-bold font-serif">
+                      {(album?.title ?? '??').slice(0, 2).toUpperCase()}
+                    </div>
+                  )}
                 </div>
-                <div className="flex items-center gap-1">
-                  <StarRow rating={r.rating} />
-                  <span className="text-sm font-bold ml-1">{r.rating.toFixed(1)}</span>
+
+                {/* Info */}
+                <div className="flex-1 min-w-0">
+                  <div className="flex items-start justify-between gap-2 mb-1">
+                    <div className="min-w-0">
+                      <h3
+                        className="font-semibold text-sm truncate"
+                        style={{ color: 'var(--text)' }}
+                      >
+                        {album?.title ?? 'Unknown Album'}
+                      </h3>
+                      <p className="text-xs truncate mt-0.5" style={{ color: 'var(--muted)' }}>
+                        {album?.artist ?? 'Unknown Artist'}
+                      </p>
+                    </div>
+                    <div className="flex items-center gap-1.5 shrink-0">
+                      <StarRow rating={r.rating} />
+                      <span
+                        className="text-sm font-bold"
+                        style={{ color: 'var(--text)' }}
+                      >
+                        {Number(r.rating).toFixed(1)}
+                      </span>
+                    </div>
+                  </div>
+                  {r.review && (
+                    <p
+                      className="text-xs leading-relaxed italic mt-2"
+                      style={{ color: 'var(--muted)' }}
+                    >
+                      "{r.review}"
+                    </p>
+                  )}
+                  <p className="text-[11px] mt-2" style={{ color: 'var(--muted)' }}>
+                    {r.updated_at ? new Date(r.updated_at).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' }) : ''}
+                  </p>
                 </div>
               </div>
-              {r.review && (
-                <p className="text-sm text-slate-600 dark:text-gray-300/80 italic mt-2">"{r.review}"</p>
-              )}
-            </div>
-          </div>
-        ))}
-      </div>
+            )
+          })}
+        </div>
+      )}
     </>
   )
 }

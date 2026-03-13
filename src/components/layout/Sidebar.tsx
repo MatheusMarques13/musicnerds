@@ -1,18 +1,20 @@
 'use client'
 
+import { useEffect, useState } from 'react'
 import Link from 'next/link'
-import { usePathname } from 'next/navigation'
+import { usePathname, useRouter } from 'next/navigation'
 import {
   Home, Search, BarChart2, Rss,
   Users, List, TrendingUp, Archive, Star, Music2,
-  ChevronDown,
+  ChevronDown, LogOut,
 } from 'lucide-react'
+import { createClient } from '@/lib/supabase/client'
 
 const nav = [
   { label: 'DISCOVER', items: [
-    { href: '/',           icon: Home,       label: 'Home' },
-    { href: '/explore',    icon: Search,     label: 'Explore' },
-    { href: '/charts',     icon: BarChart2,  label: 'Charts' },
+    { href: '/app',         icon: Home,      label: 'Home' },
+    { href: '/explore',     icon: Search,    label: 'Explore' },
+    { href: '/charts',      icon: BarChart2, label: 'Charts' },
   ]},
   { label: 'SOCIAL', items: [
     { href: '/feed',        icon: Rss,   label: 'Activity Feed' },
@@ -28,6 +30,32 @@ const nav = [
 
 export function Sidebar() {
   const pathname = usePathname()
+  const router   = useRouter()
+  const supabase = createClient()
+
+  const [profile, setProfile] = useState<{ display_name: string | null; username: string } | null>(null)
+
+  useEffect(() => {
+    async function loadProfile() {
+      const { data: { user } } = await supabase.auth.getUser()
+      if (!user) return
+      const { data } = await supabase
+        .from('profiles')
+        .select('display_name, username')
+        .eq('id', user.id)
+        .single()
+      if (data) setProfile(data)
+    }
+    loadProfile()
+  }, [])
+
+  async function handleSignOut() {
+    await supabase.auth.signOut()
+    router.push('/login')
+  }
+
+  const displayName = profile?.display_name || profile?.username || 'My Music'
+  const initials    = displayName.slice(0, 2).toUpperCase()
 
   return (
     <aside
@@ -47,31 +75,30 @@ export function Sidebar() {
           >
             <Music2 size={17} className="text-white" />
           </div>
-          <span
-            className="font-serif text-xl font-bold tracking-tight"
-            style={{ color: 'var(--text)' }}
-          >
+          <span className="font-serif text-xl font-bold tracking-tight" style={{ color: 'var(--text)' }}>
             MusicNerds
           </span>
         </div>
       </div>
 
-      {/* ── Workspace Selector ── */}
+      {/* ── Workspace / User selector ── */}
       <div className="px-3 pt-3 pb-2 border-b" style={{ borderColor: 'var(--border)' }}>
         <button
           className="w-full flex items-center gap-2.5 px-3 py-2 rounded-xl transition-all text-left"
           style={{ backgroundColor: 'rgba(33,128,141,0.09)' }}
+          onClick={handleSignOut}
+          title="Click to sign out"
         >
           <div
-            className="w-6 h-6 rounded-md flex-shrink-0"
-            style={{
-              background: 'linear-gradient(135deg, var(--accent) 0%, var(--accent-warm) 100%)',
-            }}
-          />
+            className="w-6 h-6 rounded-md flex-shrink-0 flex items-center justify-center text-white text-[10px] font-bold"
+            style={{ background: 'linear-gradient(135deg, var(--accent) 0%, var(--accent-warm) 100%)' }}
+          >
+            {initials}
+          </div>
           <span className="text-[13px] font-semibold flex-1 truncate" style={{ color: 'var(--text)' }}>
-            Joe's Music
+            {displayName}
           </span>
-          <ChevronDown size={13} style={{ color: 'var(--muted)', flexShrink: 0 }} />
+          <LogOut size={12} style={{ color: 'var(--muted)', flexShrink: 0 }} />
         </button>
       </div>
 
@@ -87,7 +114,7 @@ export function Sidebar() {
             </p>
             <div className="flex flex-col gap-0.5">
               {group.items.map(({ href, icon: Icon, label }) => {
-                const active = pathname === href
+                const active = pathname === href || (href !== '/app' && pathname.startsWith(href))
                 return (
                   <Link
                     key={href}
@@ -110,9 +137,7 @@ export function Sidebar() {
 
       {/* ── Footer ── */}
       <div className="px-6 py-5 border-t" style={{ borderColor: 'var(--border)' }}>
-        <p className="text-[11px]" style={{ color: 'var(--muted)' }}>
-          MusicNerds © 2026
-        </p>
+        <p className="text-[11px]" style={{ color: 'var(--muted)' }}>MusicNerds © 2026</p>
       </div>
     </aside>
   )

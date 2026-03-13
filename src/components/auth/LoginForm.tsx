@@ -20,16 +20,30 @@ export function LoginForm() {
 
     if (isLogin) {
       const { error } = await supabase.auth.signInWithPassword({ email, password })
-      if (error) setMessage({ type: 'error', text: error.message })
-      else window.location.href = '/app'
+      if (error) {
+        setMessage({ type: 'error', text: error.message })
+      } else {
+        window.location.href = '/app'
+      }
     } else {
-      const { error } = await supabase.auth.signUp({
+      const { data: authData, error } = await supabase.auth.signUp({
         email,
         password,
         options: { emailRedirectTo: `${window.location.origin}/auth/callback` },
       })
-      if (error) setMessage({ type: 'error', text: error.message })
-      else setMessage({ type: 'success', text: 'Check your email to confirm your account!' })
+      if (error) {
+        setMessage({ type: 'error', text: error.message })
+      } else {
+        // Create profile row immediately (best-effort – may fail if email not confirmed yet)
+        if (authData.user) {
+          const username = email.split('@')[0].replace(/[^a-z0-9_]/gi, '_').toLowerCase().slice(0, 30)
+          await supabase.from('profiles').upsert(
+            { id: authData.user.id, username, display_name: username },
+            { onConflict: 'id' }
+          )
+        }
+        setMessage({ type: 'success', text: 'Check your email to confirm your account!' })
+      }
     }
 
     setLoading(false)
@@ -60,9 +74,7 @@ export function LoginForm() {
         {isLogin ? 'Welcome back' : 'Create account'}
       </h2>
       <p className="text-sm mb-7" style={{ color: 'var(--muted)' }}>
-        {isLogin
-          ? 'Sign in to your MusicNerds account'
-          : 'Join thousands of music enthusiasts'}
+        {isLogin ? 'Sign in to your MusicNerds account' : 'Join thousands of music enthusiasts'}
       </p>
 
       {/* Sign In / Sign Up toggle tabs */}
@@ -93,7 +105,6 @@ export function LoginForm() {
 
       {/* Form */}
       <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
-        {/* Email */}
         <div style={{ position: 'relative' }}>
           <Mail
             size={15}
@@ -109,24 +120,16 @@ export function LoginForm() {
             onChange={(e) => setEmail(e.target.value)}
             required
             style={{
-              width: '100%',
-              paddingLeft: 40, paddingRight: 14,
-              paddingTop: 12, paddingBottom: 12,
-              border: '1.5px solid var(--border)',
-              borderRadius: 12,
-              background: 'rgba(255,255,255,0.70)',
-              color: 'var(--text)',
-              fontSize: 14,
-              outline: 'none',
-              transition: 'border-color 0.15s',
-              boxSizing: 'border-box',
+              width: '100%', paddingLeft: 40, paddingRight: 14, paddingTop: 12, paddingBottom: 12,
+              border: '1.5px solid var(--border)', borderRadius: 12,
+              background: 'rgba(255,255,255,0.70)', color: 'var(--text)', fontSize: 14,
+              outline: 'none', transition: 'border-color 0.15s', boxSizing: 'border-box',
             }}
             onFocus={(e) => (e.target.style.borderColor = 'var(--accent)')}
             onBlur={(e)  => (e.target.style.borderColor = 'var(--border)')}
           />
         </div>
 
-        {/* Password */}
         <div style={{ position: 'relative' }}>
           <Lock
             size={15}
@@ -142,24 +145,16 @@ export function LoginForm() {
             onChange={(e) => setPassword(e.target.value)}
             required
             style={{
-              width: '100%',
-              paddingLeft: 40, paddingRight: 14,
-              paddingTop: 12, paddingBottom: 12,
-              border: '1.5px solid var(--border)',
-              borderRadius: 12,
-              background: 'rgba(255,255,255,0.70)',
-              color: 'var(--text)',
-              fontSize: 14,
-              outline: 'none',
-              transition: 'border-color 0.15s',
-              boxSizing: 'border-box',
+              width: '100%', paddingLeft: 40, paddingRight: 14, paddingTop: 12, paddingBottom: 12,
+              border: '1.5px solid var(--border)', borderRadius: 12,
+              background: 'rgba(255,255,255,0.70)', color: 'var(--text)', fontSize: 14,
+              outline: 'none', transition: 'border-color 0.15s', boxSizing: 'border-box',
             }}
             onFocus={(e) => (e.target.style.borderColor = 'var(--accent)')}
             onBlur={(e)  => (e.target.style.borderColor = 'var(--border)')}
           />
         </div>
 
-        {/* Forgot password (sign-in only) */}
         {isLogin && (
           <div style={{ textAlign: 'right', marginTop: -4 }}>
             <a href="#" style={{ fontSize: 12.5, color: 'var(--accent)', textDecoration: 'none', fontWeight: 500 }}>
@@ -168,13 +163,10 @@ export function LoginForm() {
           </div>
         )}
 
-        {/* Status message */}
         {message && (
           <p
             style={{
-              fontSize: 13,
-              padding: '10px 14px',
-              borderRadius: 10,
+              fontSize: 13, padding: '10px 14px', borderRadius: 10,
               background: message.type === 'error' ? 'rgba(200,50,50,0.08)' : 'rgba(33,128,141,0.09)',
               color: message.type === 'error' ? '#c03030' : 'var(--accent)',
               border: `1px solid ${message.type === 'error' ? 'rgba(200,50,50,0.18)' : 'rgba(33,128,141,0.18)'}`,
@@ -184,27 +176,17 @@ export function LoginForm() {
           </p>
         )}
 
-        {/* Submit */}
         <button
           type="submit"
           disabled={loading}
           style={{
-            width: '100%',
-            padding: '13px 0',
+            width: '100%', padding: '13px 0',
             background: loading ? 'var(--muted)' : 'var(--text)',
-            color: 'white',
-            fontWeight: 600,
-            fontSize: 15,
-            border: 'none',
-            borderRadius: 100,
+            color: 'white', fontWeight: 600, fontSize: 15,
+            border: 'none', borderRadius: 100,
             cursor: loading ? 'not-allowed' : 'pointer',
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'center',
-            gap: 8,
-            marginTop: 4,
-            transition: 'background 0.15s',
-            letterSpacing: '-0.1px',
+            display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 8,
+            marginTop: 4, transition: 'background 0.15s', letterSpacing: '-0.1px',
           }}
         >
           {loading && <Loader2 size={15} className="animate-spin" />}
@@ -224,25 +206,16 @@ export function LoginForm() {
         onClick={handleGoogleLogin}
         type="button"
         style={{
-          width: '100%',
-          padding: '12px 0',
-          border: '1.5px solid var(--border)',
-          borderRadius: 100,
-          fontSize: 14,
-          fontWeight: 600,
-          background: 'rgba(255,255,255,0.60)',
-          color: 'var(--text)',
-          cursor: 'pointer',
-          display: 'flex',
-          alignItems: 'center',
-          justifyContent: 'center',
-          gap: 10,
-          transition: 'background 0.15s, border-color 0.15s',
+          width: '100%', padding: '12px 0',
+          border: '1.5px solid var(--border)', borderRadius: 100,
+          fontSize: 14, fontWeight: 600,
+          background: 'rgba(255,255,255,0.60)', color: 'var(--text)',
+          cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 10,
+          transition: 'background 0.15s',
         }}
         onMouseEnter={(e) => { (e.currentTarget as HTMLButtonElement).style.background = 'rgba(255,255,255,0.90)' }}
         onMouseLeave={(e) => { (e.currentTarget as HTMLButtonElement).style.background = 'rgba(255,255,255,0.60)' }}
       >
-        {/* Google "G" logo */}
         <svg width="18" height="18" viewBox="0 0 48 48">
           <path fill="#FFC107" d="M43.6 20H24v8h11.3C33.6 33.6 29.2 36 24 36c-6.6 0-12-5.4-12-12s5.4-12 12-12c3 0 5.8 1.1 7.9 3l5.7-5.7C34.1 6.5 29.3 4.5 24 4.5 12.7 4.5 3.5 13.7 3.5 25S12.7 45.5 24 45.5c11 0 20.5-8 20.5-20.5 0-1.4-.1-2.7-.4-4z"/>
           <path fill="#FF3D00" d="M6.3 14.7l6.6 4.8C14.5 15.1 18.9 12 24 12c3 0 5.8 1.1 7.9 3l5.7-5.7C34.1 6.5 29.3 4.5 24 4.5c-7.7 0-14.4 4.4-17.7 10.2z"/>
