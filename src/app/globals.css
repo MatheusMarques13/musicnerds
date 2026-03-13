@@ -3,17 +3,17 @@
 @tailwind utilities;
 
 :root {
-  --bg: #F4F1EA;
-  --bg-card: rgba(255, 252, 246, 0.80);
-  --bg-pill: rgba(255, 251, 245, 0.92);
-  --grid-color: rgba(189, 181, 170, 0.38);
-  --text: #1F2933;
-  --muted: #6E6861;
-  --border: #C8BFB4;
+  --bg: #F2EFE8;
+  --bg-card: rgba(255, 253, 248, 0.88);
+  --bg-pill: rgba(255, 252, 246, 0.94);
+  --grid-color: rgba(185, 176, 164, 0.32);
+  --text: #1C2128;
+  --muted: #6B6258;
+  --border: #C4BAB0;
   --accent: #21808D;
   --accent-warm: #B87333;
-  --shadow-card: 0 1px 3px rgba(50, 40, 30, 0.07), 0 4px 16px rgba(50, 40, 30, 0.05);
-  --shadow-hover: 0 4px 20px rgba(50, 40, 30, 0.13);
+  --shadow-card: 0 1px 4px rgba(40, 30, 20, 0.06), 0 4px 18px rgba(40, 30, 20, 0.05);
+  --shadow-hover: 0 6px 24px rgba(40, 30, 20, 0.12);
 }
 
 * {

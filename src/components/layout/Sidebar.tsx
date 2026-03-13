@@ -4,24 +4,25 @@ import Link from 'next/link'
 import { usePathname } from 'next/navigation'
 import {
   Home, Search, BarChart2, Rss,
-  Users, List, TrendingUp, Archive, Star, Music2
+  Users, List, TrendingUp, Archive, Star, Music2,
+  ChevronDown,
 } from 'lucide-react'
 
 const nav = [
   { label: 'DISCOVER', items: [
-    { href: '/', icon: Home, label: 'Home' },
-    { href: '/explore', icon: Search, label: 'Explore' },
-    { href: '/charts', icon: BarChart2, label: 'Charts' },
+    { href: '/',           icon: Home,       label: 'Home' },
+    { href: '/explore',    icon: Search,     label: 'Explore' },
+    { href: '/charts',     icon: BarChart2,  label: 'Charts' },
   ]},
   { label: 'SOCIAL', items: [
-    { href: '/feed', icon: Rss, label: 'Activity Feed' },
+    { href: '/feed',        icon: Rss,   label: 'Activity Feed' },
     { href: '/communities', icon: Users, label: 'Communities' },
-    { href: '/lists', icon: List, label: 'Collaborative Lists' },
+    { href: '/lists',       icon: List,  label: 'Collaborative Lists' },
   ]},
   { label: 'YOUR MUSIC', items: [
-    { href: '/stats', icon: TrendingUp, label: 'Your Stats' },
-    { href: '/collection', icon: Archive, label: 'Collection' },
-    { href: '/ratings', icon: Star, label: 'Your Ratings' },
+    { href: '/stats',      icon: TrendingUp, label: 'Your Stats' },
+    { href: '/collection', icon: Archive,    label: 'Collection' },
+    { href: '/ratings',    icon: Star,       label: 'Your Ratings' },
   ]},
 ]
 
@@ -32,30 +33,54 @@ export function Sidebar() {
     <aside
       className="hidden md:flex flex-col w-60 shrink-0 h-screen sticky top-0 border-r overflow-y-auto"
       style={{
-        backgroundColor: 'rgba(244, 241, 234, 0.92)',
+        backgroundColor: 'rgba(244, 241, 234, 0.95)',
         borderColor: 'var(--border)',
         backdropFilter: 'blur(12px)',
       }}
     >
-      {/* Logo */}
-      <div className="px-6 py-7 border-b" style={{ borderColor: 'var(--border)' }}>
+      {/* ── Logo ── */}
+      <div className="px-5 py-6 border-b" style={{ borderColor: 'var(--border)' }}>
         <div className="flex items-center gap-2.5">
           <div
-            className="w-8 h-8 rounded-lg flex items-center justify-center"
-            style={{ backgroundColor: 'var(--accent)' }}
+            className="w-9 h-9 rounded-xl flex items-center justify-center shadow-sm"
+            style={{ background: 'linear-gradient(135deg, var(--accent) 0%, #1a6870 100%)' }}
           >
-            <Music2 size={16} className="text-white" />
+            <Music2 size={17} className="text-white" />
           </div>
-          <span className="font-serif text-xl font-bold" style={{ color: 'var(--text)' }}>MusicNerds</span>
+          <span
+            className="font-serif text-xl font-bold tracking-tight"
+            style={{ color: 'var(--text)' }}
+          >
+            MusicNerds
+          </span>
         </div>
       </div>
 
-      {/* Nav */}
-      <nav className="flex-1 px-3 py-5 flex flex-col gap-6">
+      {/* ── Workspace Selector ── */}
+      <div className="px-3 pt-3 pb-2 border-b" style={{ borderColor: 'var(--border)' }}>
+        <button
+          className="w-full flex items-center gap-2.5 px-3 py-2 rounded-xl transition-all text-left"
+          style={{ backgroundColor: 'rgba(33,128,141,0.09)' }}
+        >
+          <div
+            className="w-6 h-6 rounded-md flex-shrink-0"
+            style={{
+              background: 'linear-gradient(135deg, var(--accent) 0%, var(--accent-warm) 100%)',
+            }}
+          />
+          <span className="text-[13px] font-semibold flex-1 truncate" style={{ color: 'var(--text)' }}>
+            Joe's Music
+          </span>
+          <ChevronDown size={13} style={{ color: 'var(--muted)', flexShrink: 0 }} />
+        </button>
+      </div>
+
+      {/* ── Nav ── */}
+      <nav className="flex-1 px-3 py-4 flex flex-col gap-5">
         {nav.map((group) => (
           <div key={group.label}>
             <p
-              className="px-3 mb-2 text-[10px] font-semibold tracking-[0.18em]"
+              className="px-3 mb-1.5 text-[10px] font-semibold tracking-[0.18em]"
               style={{ color: 'var(--muted)' }}
             >
               {group.label}
@@ -67,14 +92,13 @@ export function Sidebar() {
                   <Link
                     key={href}
                     href={href}
-                    className="flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-medium transition-all"
+                    className="flex items-center gap-3 px-3 py-2.5 rounded-xl text-[13px] font-medium transition-all"
                     style={{
-                      backgroundColor: active ? 'rgba(33,128,141,0.10)' : 'transparent',
+                      backgroundColor: active ? 'rgba(33,128,141,0.12)' : 'transparent',
                       color: active ? 'var(--accent)' : 'var(--muted)',
-                      borderLeft: active ? '2.5px solid var(--accent)' : '2.5px solid transparent',
                     }}
                   >
-                    <Icon size={16} />
+                    <Icon size={15} strokeWidth={active ? 2.2 : 1.8} />
                     {label}
                   </Link>
                 )
@@ -84,7 +108,7 @@ export function Sidebar() {
         ))}
       </nav>
 
-      {/* Footer */}
+      {/* ── Footer ── */}
       <div className="px-6 py-5 border-t" style={{ borderColor: 'var(--border)' }}>
         <p className="text-[11px]" style={{ color: 'var(--muted)' }}>
           MusicNerds © 2026

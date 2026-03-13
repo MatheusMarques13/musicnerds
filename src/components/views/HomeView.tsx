@@ -56,13 +56,13 @@ export function HomeView() {
 
       {/* Stats */}
       <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-10">
-        <StatCard label="Scrobbles" value={stats.scrobbles.toLocaleString()} />
+        <StatCard label="Scrobbles"    value={stats.scrobbles.toLocaleString()} />
         <StatCard label="Albums Rated" value={stats.rated.toLocaleString()} />
-        <StatCard label="Artists" value={stats.artists.toLocaleString()} />
-        <StatCard label="Lists" value={stats.lists.toLocaleString()} />
+        <StatCard label="Artists"      value={stats.artists.toLocaleString()} />
+        <StatCard label="Lists"        value={stats.lists.toLocaleString()} />
       </div>
 
-      {/* Albums */}
+      {/* Section heading */}
       <div className="flex items-center justify-between mb-5">
         <h2 className="font-serif text-xl font-bold" style={{ color: 'var(--text)' }}>
           {newReleases.length > 0 ? 'New Releases' : 'Trending Now'}
@@ -70,6 +70,7 @@ export function HomeView() {
         {loadingReleases && <Loader2 size={15} className="animate-spin" style={{ color: 'var(--accent)' }} />}
       </div>
 
+      {/* Album grid — 3 cols on md so document cards have breathing room */}
       <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-6 gap-4 mb-10">
         {displayAlbums.map((album: any) => (
           <AlbumCard
@@ -85,8 +86,10 @@ export function HomeView() {
         ))}
       </div>
 
-      {/* Activity */}
-      <h2 className="font-serif text-xl font-bold mb-5" style={{ color: 'var(--text)' }}>Recent Activity</h2>
+      {/* Recent Activity */}
+      <h2 className="font-serif text-xl font-bold mb-5" style={{ color: 'var(--text)' }}>
+        Recent Activity
+      </h2>
       <div className="flex flex-col gap-3">
         {recentActivity.map((item) => (
           <ActivityItem key={item.username + item.albumTitle} {...item} />
