@@ -1,13 +1,5 @@
-import { Sidebar } from '@/components/layout/Sidebar'
-import { HomeView } from '@/components/views/HomeView'
+import { LandingPage } from '@/components/LandingPage'
 
 export default function HomePage() {
-  return (
-    <div className="flex h-screen overflow-hidden">
-      <Sidebar />
-      <main className="flex-1 overflow-y-auto p-8">
-        <HomeView />
-      </main>
-    </div>
-  )
+  return <LandingPage />
 }
